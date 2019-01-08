@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_keypad_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4">
+
+    <Button
+        android:id="@+id/btn_key_seven"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_seven" />
+
+    <Button
+        android:id="@+id/btn_key_eight"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_eight" />
+
+    <Button
+        android:id="@+id/btn_key_nine"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_nine" />
+
+    <Button
+        android:id="@+id/btn_key_backspace"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_backspace" />
+
+    <Button
+        android:id="@+id/btn_key_four"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_four" />
+
+    <Button
+        android:id="@+id/btn_key_five"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_five" />
+
+    <Button
+        android:id="@+id/btn_key_six"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_six" />
+
+    <Button
+        android:id="@+id/btn_key_plus"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_plus" />
+
+    <Button
+        android:id="@+id/btn_key_one"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_one" />
+
+    <Button
+        android:id="@+id/btn_key_two"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_two" />
+
+    <Button
+        android:id="@+id/btn_key_three"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_three" />
+
+    <Button
+        android:id="@+id/btn_key_minus"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_minus" />
+
+    <Button
+        android:id="@+id/btn_key_zero"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_zero" />
+
+    <Button
+        android:id="@+id/btn_key_decimal"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_decimal" />
+
+
+    <Button
+        android:id="@+id/btn_key_equal"
+        style="@style/AppTheme.KeypadButton"
+        android:layout_rowSpan="2"
+        android:text="@string/str_equal" />
+
+    <Button
+        android:id="@+id/btn_key_multiply"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_multiply" />
+
+    <Button
+        android:id="@+id/btn_key_percentage"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_percentage" />
+
+    <Button
+        android:id="@+id/btn_key_clear"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_clear" />
+
+    <Button
+        android:id="@+id/btn_key_division"
+        style="@style/AppTheme.KeypadButton"
+        android:text="@string/str_division" />
+
+
+</GridLayout>

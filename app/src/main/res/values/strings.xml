@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Calculator P</string>
+    <string name="str_backspace"><![CDATA[<=]]></string>
+    <string name="str_division">/</string>
+    <string name="str_clear">C</string>
+    <string name="str_percentage">%</string>
+    <string name="str_multiply">x</string>
+    <string name="str_equal">=</string>
+    <string name="str_decimal">.</string>
+    <string name="str_zero">0</string>
+    <string name="str_minus">-</string>
+    <string name="str_three">3</string>
+    <string name="str_two">2</string>
+    <string name="str_one">1</string>
+    <string name="str_plus">+</string>
+    <string name="str_six">6</string>
+    <string name="str_five">5</string>
+    <string name="str_four">4</string>
+    <string name="str_nine">9</string>
+    <string name="str_eight">8</string>
+    <string name="str_seven">7</string>
+    <string name="pin_alert_title">Enter New Pin and Activation Button</string>
+    <string name="pin_alert_message">Please type your PIN (at least 4 digit) code and press any of these keys (+, -, /, X, %) to set it as activation button. This button will allow you view your encrypted files after you type the PIN code. (DO NOT share with anyone)</string>
+    <string name="pin_success_message">You have successfully activated your photo vault PIN.</string>
+    <string name="pin_success_title">PIN Activated</string>
+    <string name="pin_error_message">The PIN must contain at least 4 digit followed by the activation button</string>
+    <string name="okay">Okay</string>
+    <string name="title_activity_vault">VaultActivity</string>
+    <string name="title_photos">Photo</string>
+    <string name="title_videos">Video</string>
+    <string name="title_file">Document</string>
+    <string name="some_error">Operation failed!</string>
+    <string name="jpg">jpg</string>
+    <string name="restore">Restore</string>
+</resources>

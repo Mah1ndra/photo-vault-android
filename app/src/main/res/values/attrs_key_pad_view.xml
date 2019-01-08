@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="KeyPad">
+        <attr name="keypadTextColor" format="color" />
+        <attr name="keypadTextSize" format="dimension" />
+        <attr name="keypadBackgroundColor" format="color" />
+    </declare-styleable>
+</resources>

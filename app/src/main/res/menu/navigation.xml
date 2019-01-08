@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_photos"
+        android:icon="@drawable/ic_photo_library_black_24dp"
+        android:title="@string/title_photos" />
+
+    <item
+        android:id="@+id/navigation_videos"
+        android:icon="@drawable/ic_video_library_black_24dp"
+        android:title="@string/title_videos" />
+
+
+    <item
+        android:id="@+id/navigation_file"
+        android:icon="@drawable/ic_file_black_24dp"
+        android:title="@string/title_file" />
+
+</menu>
