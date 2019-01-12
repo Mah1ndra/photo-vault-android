@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.secure.calculatorp.R;
@@ -113,10 +114,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             final Uri image = mImages.get(position);
 
             if (image != null) {
+
                 Glide.with(itemView.getContext())
                         .load(image.getPath())
                         .asBitmap()
                         .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .error(R.drawable.ic_photo_library_black_24dp)
                         .into(new SimpleTarget<Bitmap>(150, 150) {
                             @Override

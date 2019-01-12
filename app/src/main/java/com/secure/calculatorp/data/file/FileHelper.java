@@ -20,7 +20,8 @@ import javax.crypto.SecretKey;
 
 public interface FileHelper {
 
-    boolean deleteImage(Uri uri);
+    boolean deleteExternalImage(Uri uri);
+    boolean restoreImage(Uri uri);
 
     boolean storeImage(FileModel src, SecretKey secretKey)
             throws IOException, InvalidAlgorithmParameterException,

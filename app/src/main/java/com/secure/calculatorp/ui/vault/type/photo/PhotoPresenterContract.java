@@ -42,6 +42,16 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
     }
 
     @Override
+    public void onRestoreClicked(Uri uri) {
+        dataManager.restoreImage(uri);
+    }
+
+    @Override
+    public void onUpdate() {
+        onViewCreated();
+    }
+
+    @Override
     public void onViewCreated() {
         try {
             SecretKey secretKey = (SecretKey) cryptoKeyManager.retrieveKey(dataManager.getTempPin().toCharArray());

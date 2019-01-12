@@ -65,6 +65,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
 
     @Override
     public void onScreenVisible() {
+        isPausedForSelection = false;
         if (!mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
                 || !mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             mvpView.requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,

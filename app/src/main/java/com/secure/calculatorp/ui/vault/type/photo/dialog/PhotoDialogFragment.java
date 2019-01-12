@@ -154,11 +154,11 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
     @Override
     public void transmitRestoreClick() {
         if (mListener != null) {
-            mListener.onRestoreClicked();
+            mListener.onRestoreClicked(getDialog());
         }
     }
 
     public interface OnRestoreClickListener extends Parcelable {
-        void onRestoreClicked();
+        void onRestoreClicked(Dialog dialog);
     }
 }

@@ -12,6 +12,8 @@ import com.secure.calculatorp.ui.base.BaseMvpView;
 public interface PhotoPresenter<V extends BaseMvpView> extends BaseMvpPresenter<V> {
 
     void onVisibleScreen();
+    void onUpdate();
+    void onRestoreClicked(Uri uri);
     void onViewCreated();
     void onImageClick(Uri uri);
 }

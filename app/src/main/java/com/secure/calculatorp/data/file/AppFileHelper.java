@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.support.v4.provider.DocumentFile;
 import android.webkit.MimeTypeMap;
@@ -21,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -94,6 +96,7 @@ public class AppFileHelper implements FileHelper {
             fileOutputStream.close();
         }
         outputStream.close();
+        deleteExternalImage(src.getUri());
         return true;
     }
 
@@ -136,10 +139,35 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public boolean deleteImage(Uri uri) {
+    public boolean deleteExternalImage(Uri uri) {
         try {
             return DocumentFile.fromSingleUri(context, uri).delete();
         } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean restoreImage(Uri uri) {
+        try {
+            File file = new File(uri.getPath());
+            File fileEncrypted = new File(getInternalImageDirectory()
+                    + File.separator + getFileNameFromUri(uri));
+            FileInputStream inputStream = new FileInputStream(file);
+            FileOutputStream outputStream = new FileOutputStream(getExternelImageDirectory()
+                    + File.separator + getFileNameFromUri(uri));
+            byte[] bytes = new byte[4096];
+            int b;
+            while ((b = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, b);
+            }
+            outputStream.close();
+            inputStream.close();
+            boolean tempFileDeleted = file.delete();
+            boolean encryptedFileDeleted = fileEncrypted.delete();
+            return tempFileDeleted && encryptedFileDeleted;
+        } catch (NullPointerException | IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -166,6 +194,10 @@ public class AppFileHelper implements FileHelper {
 
     private File getInternalTempDirectory() {
         return context.getDir(AppConstants.LOCATION_INTERNAL_TEMP, Context.MODE_PRIVATE);
+    }
+
+    private File getExternelImageDirectory() {
+        return Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES);
     }
 
     @Override

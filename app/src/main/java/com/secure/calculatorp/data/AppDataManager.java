@@ -133,8 +133,13 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public boolean deleteImage(Uri uri) {
-        return mFileHelper.deleteImage(uri);
+    public boolean deleteExternalImage(Uri uri) {
+        return mFileHelper.deleteExternalImage(uri);
+    }
+
+    @Override
+    public boolean restoreImage(Uri uri) {
+        return mFileHelper.restoreImage(uri);
     }
 
     @Override

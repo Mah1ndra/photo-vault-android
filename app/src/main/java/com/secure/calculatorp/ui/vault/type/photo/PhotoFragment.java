@@ -123,22 +123,25 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
     public void showFullScreenImageView(Uri uri) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance(uri, new PhotoDialogFragment.OnRestoreClickListener() {
-            @Override
-            public void onRestoreClicked() {
-                //presenter.onRestoreClicked()
-            }
+        PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance(uri,
+                new PhotoDialogFragment.OnRestoreClickListener() {
+                    @Override
+                    public void onRestoreClicked(Dialog dialog) {
+                        presenter.onRestoreClicked(uri);
+                        dialog.dismiss();
+                        presenter.onUpdate();
+                    }
 
-            @Override
-            public int describeContents() {
-                return 0;
-            }
+                    @Override
+                    public int describeContents() {
+                        return 0;
+                    }
 
-            @Override
-            public void writeToParcel(Parcel parcel, int i) {
+                    @Override
+                    public void writeToParcel(Parcel parcel, int i) {
 
-            }
-        });
+                    }
+                });
         photoDialogFragment.show(ft, TAG_PHOTO_DIALOG_FRAGMENT);
     }
 
