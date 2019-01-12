@@ -204,7 +204,7 @@ public class AppFileHelper implements FileHelper {
     public void removeTempImages() {
         try {
             FileUtils.deleteDirectory(getInternalTempDirectory());
-        } catch (IOException e) {
+        } catch (IOException | NoSuchMethodError e) {
             e.printStackTrace();
         }
     }
