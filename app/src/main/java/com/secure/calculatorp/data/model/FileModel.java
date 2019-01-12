@@ -6,13 +6,17 @@ import android.net.Uri;
  * Created by zakir on 06/01/2019.
  */
 
-public class Image {
+public class FileModel {
 
     private Uri uri;
 
-    public Image(Uri uri) {
+    public FileModel(Uri uri, byte[] iv) {
         this.uri = uri;
+        this.iv = iv;
     }
+
+    private byte[] iv;
+
 
     public Uri getUri() {
         return uri;
@@ -20,5 +24,13 @@ public class Image {
 
     public void setUri(Uri uri) {
         this.uri = uri;
+    }
+
+    public byte[] getIv() {
+        return iv;
+    }
+
+    public void setIv(byte[] iv) {
+        this.iv = iv;
     }
 }

@@ -13,5 +13,5 @@ public interface VaultPresenter<V extends VaultView> extends BaseMvpPresenter<V>
     void onNavItemSelected(int navigationId);
     void onVisibleScreen();
     void onAddClick();
-    void onSelectedData(Intent intent);
+    void onImageSelected(Intent intent);
 }

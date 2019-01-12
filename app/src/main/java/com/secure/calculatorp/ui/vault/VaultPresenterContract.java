@@ -2,24 +2,27 @@ package com.secure.calculatorp.ui.vault;
 
 import android.Manifest;
 import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Base64;
 
 import com.secure.calculatorp.R;
-import com.secure.calculatorp.crypto.CryptoKeyManager;
+import com.secure.calculatorp.crypto.CryptoManager;
 import com.secure.calculatorp.data.DataManager;
-import com.secure.calculatorp.di.ActivityContext;
+import com.secure.calculatorp.data.model.FileModel;
 import com.secure.calculatorp.util.AppConstants;
+import com.secure.calculatorp.util.CommonUtils;
 import com.secure.calculatorp.util.StringUtil;
 
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
@@ -34,7 +37,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     DataManager dataManager;
 
     @Inject
-    CryptoKeyManager cryptoKeyManager;
+    CryptoManager cryptoManager;
 
     private VaultView mvpView;
 
@@ -46,7 +49,6 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     @Override
     public void onAttach(V mvpView) {
         this.mvpView = mvpView;
-        dataManager.setTempPin(mvpView.getPinCode());
     }
 
     @Override
@@ -77,45 +79,67 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     }
 
     @Override
-    public void onSelectedData(Intent intent) {
-        encryptAndStoreData(intent);
+    public void onImageSelected(Intent intent) {
+        encryptData(intent);
     }
 
-    private void encryptAndStoreData(Intent intent) {
-        byte[] iv;
-        if (!dataManager.hasInitializationVector()) {
-            iv = cryptoKeyManager.generateRandom(16);
-            dataManager.setInitializationVector(StringUtil.getIvStringFromByteArray(iv));
-        } else {
-            iv = StringUtil.getIvBytesFromString(dataManager.getInitializationVector());
-        }
+    private void encryptData(Intent intent) {
 
+        SecretKey secretKey = getKey();
+
+        if (secretKey != null) {
+            if(encryptData(intent, secretKey)){
+                try {
+                    dataManager.createTempImages(secretKey);
+                } catch (IOException | NoSuchAlgorithmException
+                        | NoSuchPaddingException
+                        | InvalidAlgorithmParameterException | InvalidKeyException e) {
+                    mvpView.encryptionErrorDialog();
+                }
+            }
+        }
+    }
+
+    private boolean encryptData(Intent intent, SecretKey secretKey) {
+        try {
+            if (intent.getData() != null) {
+                return dataManager.storeImage(createFileModel(intent.getData()), secretKey);
+            } else if (intent.getClipData() != null) {
+                return dataManager.storeImage(getUriListFromIntent(intent.getClipData()), secretKey);
+            }
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException
+                | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    private FileModel createFileModel(Uri uri) {
+        return new FileModel(uri, CommonUtils.generateRandom(16));
+    }
+
+    private SecretKey getKey() {
         SecretKey secretKey = null;
         try {
             if (!StringUtil.isNullOrEmpty(dataManager.getTempPin())) {
-                secretKey = cryptoKeyManager.getSecretKey(dataManager.getTempPin().toCharArray());
+                secretKey = (SecretKey) cryptoManager.retrieveKey(dataManager.getTempPin().toCharArray());
             }
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
+        } catch (KeyStoreException | UnrecoverableEntryException | NoSuchAlgorithmException e) {
+            return null;
         }
-
-        if (intent.getData() != null && secretKey != null) {
-            dataManager.storeImage(intent.getData(), secretKey, iv);
-        } else if (intent.getClipData() != null) {
-            dataManager.storeImage(getUriListFromIntent(intent.getClipData()), secretKey, iv);
-        }
+        return secretKey;
     }
 
-    private ArrayList<Uri> getUriListFromIntent(ClipData clipData) {
+    private ArrayList<FileModel> getUriListFromIntent(ClipData clipData) {
 
-        ArrayList<Uri> mArrayUri = new ArrayList<>();
+        ArrayList<FileModel> fileModels = new ArrayList<>();
 
         for (int i = 0; i < clipData.getItemCount(); i++) {
             ClipData.Item item = clipData.getItemAt(i);
-            Uri uri = item.getUri();
-            mArrayUri.add(uri);
-
+            FileModel fileModel = new FileModel(item.getUri(), CommonUtils.generateRandom(16));
+            fileModels.add(fileModel);
         }
-        return mArrayUri;
+        return fileModels;
     }
 }

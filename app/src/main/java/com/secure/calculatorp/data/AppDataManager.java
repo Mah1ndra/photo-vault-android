@@ -20,11 +20,17 @@ import android.net.Uri;
 
 
 import com.secure.calculatorp.data.file.FileHelper;
+import com.secure.calculatorp.data.model.FileModel;
 import com.secure.calculatorp.data.prefs.PreferencesHelper;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -112,8 +118,8 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public HashSet<Uri> getImageList() {
-        return mFileHelper.getImageList();
+    public HashSet<Uri> getTempImages() {
+        return mFileHelper.getTempImages();
     }
 
     @Override
@@ -132,12 +138,25 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public boolean storeImage(Uri uri, SecretKey secretKey, byte[] bytes) {
-        return mFileHelper.storeImage(uri,secretKey, bytes);
+    public boolean storeImage(FileModel src, SecretKey secretKey) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
+        return mFileHelper.storeImage(src,secretKey);
     }
 
     @Override
-    public boolean storeImage(ArrayList<Uri> uri, SecretKey secretKey, byte[] bytes) {
-        return mFileHelper.storeImage(uri, secretKey, bytes);
+    public boolean storeImage(ArrayList<FileModel> uri, SecretKey secretKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
+        return mFileHelper.storeImage(uri,secretKey);
     }
+
+    @Override
+    public void createTempImages(SecretKey secretKey) throws IOException,
+            InvalidAlgorithmParameterException, NoSuchAlgorithmException,
+            InvalidKeyException, NoSuchPaddingException {
+        mFileHelper.createTempImages(secretKey);
+    }
+
+    @Override
+    public void removeTempImages() {
+
+    }
+
 }

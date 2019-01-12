@@ -32,4 +32,6 @@
     <string name="some_error">Operation failed!</string>
     <string name="jpg">jpg</string>
     <string name="restore">Restore</string>
+    <string name="message_encryption_error">The selected image could not be encrypted. Please try another file or enter your PIN again</string>
+    <string name="title_encryption_error">Encryption Failed!</string>
 </resources>

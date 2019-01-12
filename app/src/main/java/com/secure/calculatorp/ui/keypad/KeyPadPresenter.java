@@ -12,5 +12,4 @@ public interface KeyPadPresenter<V extends KeyPadView> extends BaseMvpPresenter<
     void handleKeyInput(String key);
     void onVisibleScreen();
     void onHiddenScreen();
-
 }

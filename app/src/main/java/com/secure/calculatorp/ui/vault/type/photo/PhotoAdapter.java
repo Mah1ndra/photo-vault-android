@@ -1,9 +1,9 @@
 package com.secure.calculatorp.ui.vault.type.photo;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,13 +15,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.secure.calculatorp.R;
-import com.secure.calculatorp.crypto.CryptoCipherManager;
-import com.secure.calculatorp.di.ActivityContext;
+import com.secure.calculatorp.crypto.operation.AppCryptoOperation;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,16 +37,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
 
     private final List<Uri> mImages;
-    private SecretKey secretKey;
-    private byte[] iv;
     private OnListFragmentInteractionListener mListener;
-
-    private CryptoCipherManager cryptoCipherManager;
 
 
     @Inject
-    public PhotoAdapter(CryptoCipherManager cryptoCipherManager, ArrayList<Uri> mImages) {
-        this.cryptoCipherManager = cryptoCipherManager;
+    public PhotoAdapter(ArrayList<Uri> mImages) {
         this.mImages = mImages;
     }
 
@@ -93,9 +88,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         }
     }
 
-    public void addItems(HashSet<Uri> mImages, SecretKey secretKey, byte[] iv) {
-        this.secretKey = secretKey;
-        this.iv = iv;
+    public void addItems(HashSet<Uri> mImages) {
         this.mImages.clear();
         this.mImages.addAll(mImages);
         notifyDataSetChanged();
@@ -118,17 +111,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         public void onBind(int position) {
 
             final Uri image = mImages.get(position);
-            byte[] decrypt = null;
-            try {
-                FileInputStream inputStream = new FileInputStream(image.getPath());
-                decrypt = cryptoCipherManager.decrypt(inputStream, secretKey, iv);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
 
-            if (decrypt != null) {
+            if (image != null) {
                 Glide.with(itemView.getContext())
-                        .load(decrypt)
+                        .load(image.getPath())
                         .asBitmap()
                         .centerCrop()
                         .error(R.drawable.ic_photo_library_black_24dp)
@@ -144,15 +130,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
                             }
                         });
 
-                byte[] finalDecrypt = decrypt;
+
                 itemView.setOnClickListener(v -> {
-                    if (finalDecrypt.length > 0) {
-                        try {
-                            mListener.onListFragmentInteraction(finalDecrypt);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    mListener.onListFragmentInteraction(image);
                 });
             }
 
@@ -160,7 +140,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     }
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(byte[] imageUri);
+        void onListFragmentInteraction(Uri imageUri);
     }
 
 }

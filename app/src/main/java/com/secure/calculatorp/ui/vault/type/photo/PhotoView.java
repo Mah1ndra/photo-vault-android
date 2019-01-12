@@ -15,6 +15,6 @@ import javax.crypto.SecretKey;
 
 public interface PhotoView extends BaseMvpView {
 
-    void updateList(HashSet<Uri> imageList, SecretKey secretKey, byte[] bytes);
-    void showFullScreenImageView(byte[] bytes);
+    void updateList(HashSet<Uri> imageList);
+    void showFullScreenImageView(Uri uri);
 }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 
+import java.security.SecureRandom;
+
 /**
  * Created by zakir on 02/01/2019.
  */
@@ -16,6 +18,13 @@ public class CommonUtils {
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (dpWidth / 150);
         return noOfColumns;
+    }
+
+    public static byte[] generateRandom(int numBytes) {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[numBytes];
+        random.nextBytes(bytes);
+        return bytes;
     }
 
 }

@@ -19,8 +19,16 @@ import android.app.Application;
 import android.content.Context;
 
 
-import com.secure.calculatorp.crypto.CryptoCipherManager;
-import com.secure.calculatorp.crypto.CryptoKeyManager;
+import com.secure.calculatorp.crypto.AppCryptoManager;
+import com.secure.calculatorp.crypto.CryptoManager;
+import com.secure.calculatorp.crypto.cipher.AESGCMCipherAlgorithm;
+import com.secure.calculatorp.crypto.cipher.CipherAlgorithm;
+import com.secure.calculatorp.crypto.key.CryptoKeyManager;
+import com.secure.calculatorp.crypto.key.KeyGen;
+import com.secure.calculatorp.crypto.key.KeyManager;
+import com.secure.calculatorp.crypto.key.PBKDF2KeyGenerator;
+import com.secure.calculatorp.crypto.operation.AppCryptoOperation;
+import com.secure.calculatorp.crypto.operation.CryptoOperation;
 import com.secure.calculatorp.data.AppDataManager;
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.data.file.AppFileHelper;
@@ -69,23 +77,10 @@ public class ApplicationModule {
 
 
     @Provides
-    @Singleton
-    CryptoKeyManager provideCryptoKeyManager(CryptoKeyManager cryptoKeyManager) {
-        return cryptoKeyManager;
-    }
-
-    @Provides
-    Calculator provideCalculator(Calculator calculator) {
-        return calculator;
-    }
-
-    @Provides
     @PreferenceInfo
     String providePreferenceName() {
         return AppConstants.PREF_NAME;
     }
-
-
 
     @Provides
     @Singleton
@@ -97,6 +92,40 @@ public class ApplicationModule {
     @Singleton
     FileHelper provideFileHelper(AppFileHelper appPreferencesHelper) {
         return appPreferencesHelper;
+    }
+
+    @Provides
+    @Singleton
+    CryptoManager provideCryptoManager(AppCryptoManager appCryptoManager){
+        return appCryptoManager;
+    }
+
+    @Provides
+    @Singleton
+    CryptoOperation provideCryptoCipherManager(AppCryptoOperation appCryptoOperation){
+        return appCryptoOperation;
+    }
+
+    @Provides
+    @Singleton
+    KeyGen provideKeyGenerator() {
+        return new PBKDF2KeyGenerator();
+    }
+
+    @Provides
+    @Singleton
+    KeyManager provideCryptoKeyManager(CryptoKeyManager cryptoKeyManager) {
+        return cryptoKeyManager;
+    }
+
+    @Provides
+    CipherAlgorithm provideCipherAlgorithm(AESGCMCipherAlgorithm aesgcmCipherAlgorithm) {
+        return aesgcmCipherAlgorithm;
+    }
+
+    @Provides
+    Calculator provideCalculator(Calculator calculator) {
+        return calculator;
     }
 
     @Provides

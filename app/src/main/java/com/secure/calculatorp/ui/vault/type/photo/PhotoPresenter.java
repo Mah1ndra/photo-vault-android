@@ -13,5 +13,5 @@ public interface PhotoPresenter<V extends BaseMvpView> extends BaseMvpPresenter<
 
     void onVisibleScreen();
     void onViewCreated();
-    void onImageClick(byte[] imageBytes);
+    void onImageClick(Uri uri);
 }

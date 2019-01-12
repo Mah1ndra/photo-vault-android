@@ -19,7 +19,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.secure.calculatorp.VaultApp;
-import com.secure.calculatorp.crypto.CryptoCipherManager;
+import com.secure.calculatorp.crypto.CryptoManager;
+import com.secure.calculatorp.crypto.key.KeyGen;
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.di.ApplicationContext;
 import com.secure.calculatorp.di.module.ApplicationModule;
@@ -42,4 +43,7 @@ public interface ApplicationComponent {
 
     DataManager getDataManager();
 
+    CryptoManager getCryptoManager();
+
+    KeyGen getKengen();
 }

@@ -1,6 +1,7 @@
 package com.secure.calculatorp.ui.keypad;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -8,12 +9,14 @@ import android.widget.Toast;
 import com.secure.calculatorp.R;
 import com.secure.calculatorp.ui.base.BaseActivity;
 import com.secure.calculatorp.ui.custom.KeyPad;
+import com.secure.calculatorp.ui.task.DecryptionTask;
 import com.secure.calculatorp.ui.vault.VaultActivity;
 import com.secure.calculatorp.util.AppConstants;
 import com.secure.calculatorp.util.DialogUtil;
 import com.secure.calculatorp.util.StringUtil;
 
 
+import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -88,9 +91,8 @@ public class KeyPadActivity extends BaseActivity implements KeyPadView {
     }
 
     @Override
-    public void moveToVaultActivity(String pin) {
+    public void moveToVaultActivity() {
         Intent intent = new Intent(KeyPadActivity.this, VaultActivity.class);
-        intent.putExtra(AppConstants.INTENT_PIN_EXTRA, pin);
         startActivity(intent);
     }
 

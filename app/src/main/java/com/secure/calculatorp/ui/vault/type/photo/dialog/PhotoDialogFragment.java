@@ -57,14 +57,14 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
     PhotoDialogPresenter<PhotoDialogView> presenter;
 
 
-    private byte[] imageFilePath;
+    private Uri imageFilePath;
     private OnRestoreClickListener mListener;
 
 
-    public static PhotoDialogFragment newInstance(byte[] byteArray, OnRestoreClickListener onRestoreClickListener) {
+    public static PhotoDialogFragment newInstance(Uri uri, OnRestoreClickListener onRestoreClickListener) {
         PhotoDialogFragment photoDialogFragment = new PhotoDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putByteArray(IMAGE_PATH, byteArray);
+        bundle.putParcelable(IMAGE_PATH, uri);
         bundle.putParcelable(LISTENER, onRestoreClickListener);
         photoDialogFragment.setArguments(bundle);
         return photoDialogFragment;
@@ -128,11 +128,11 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
     @Override
     public void initArguments() {
         if (getArguments() != null) {
-            imageFilePath = getArguments().getByteArray(IMAGE_PATH);
+            imageFilePath = getArguments().getParcelable(IMAGE_PATH);
             mListener = getArguments().getParcelable(LISTENER);
             if (imageFilePath != null) {
                 Glide.with(getContext())
-                        .load(imageFilePath)
+                        .load(imageFilePath.getPath())
                         .asBitmap()
                         .centerCrop()
                         .error(R.drawable.ic_photo_library_black_24dp)
@@ -158,7 +158,7 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
         }
     }
 
-    public interface OnRestoreClickListener extends Parcelable{
+    public interface OnRestoreClickListener extends Parcelable {
         void onRestoreClicked();
     }
 }

@@ -21,7 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.secure.calculatorp.crypto.CryptoCipherManager;
+import com.secure.calculatorp.crypto.operation.AppCryptoOperation;
 import com.secure.calculatorp.di.ActivityContext;
 import com.secure.calculatorp.ui.keypad.KeyPadPresenter;
 import com.secure.calculatorp.ui.keypad.KeyPadPresenterContract;
@@ -92,14 +92,8 @@ public class ActivityModule {
     }
 
     @Provides
-    @Singleton
-    CryptoCipherManager provideCryptoCipherManager(){
-        return new CryptoCipherManager();
-    }
-
-    @Provides
     PhotoAdapter provideBlogAdapter() {
-        return new PhotoAdapter(provideCryptoCipherManager(), new ArrayList<>());
+        return new PhotoAdapter(new ArrayList<>());
     }
 
     @Provides

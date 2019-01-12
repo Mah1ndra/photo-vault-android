@@ -3,19 +3,19 @@ package com.secure.calculatorp.ui.keypad;
 import android.content.Context;
 
 import com.secure.calculatorp.R;
-import com.secure.calculatorp.crypto.CryptoKeyManager;
+import com.secure.calculatorp.crypto.key.CryptoKeyManager;
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.di.ActivityContext;
 import com.secure.calculatorp.util.StringUtil;
 
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Created by zakir on 02/01/2019.
@@ -23,21 +23,24 @@ import javax.inject.Singleton;
 
 public class PinValidator {
 
-    private DataManager dataManager;
-    private CryptoKeyManager cryptoKeyManager;
-    private Context context;
+    private ArrayList<String> listOperators;
 
     @Inject
-    public PinValidator(DataManager dataManager, CryptoKeyManager cryptoKeyManager,
-                        @ActivityContext Context context) {
-        this.dataManager = dataManager;
-        this.cryptoKeyManager = cryptoKeyManager;
-        this.context = context;
+    public PinValidator() {
+        listOperators = new ArrayList<>();
+        initOperators();
+    }
+
+    public void initOperators() {
+        listOperators.add("+");
+        listOperators.add("-");
+        listOperators.add("*");
+        listOperators.add("/");
+        listOperators.add("%");
     }
 
     public boolean isPinPossible(String pin) {
-        return (!StringUtil.isNullOrEmpty(pin)
-                && isOperatorSelected(pin));
+        return (!StringUtil.isNullOrEmpty(pin) && isOperatorSelected(pin));
     }
 
     public String extractPin(String pin) {
@@ -49,55 +52,18 @@ public class PinValidator {
     }
 
     private boolean isOperatorSelected(String s) {
-        return s.contains(context.getString(R.string.str_plus))
-                || s.contains(context.getString(R.string.str_minus))
-                || s.contains(context.getString(R.string.str_multiply))
-                || s.contains(context.getString(R.string.str_percentage))
-                || s.contains(context.getString(R.string.str_division));
-    }
-
-
-    public boolean hasPin() {
-        return dataManager.hasPinCodeEnabled();
-    }
-
-    public boolean generateSecretKey(String pin) {
-        String newPin = extractPin(pin);
-        String newOperator = extractOperator(pin);
-
-        SecretKey secretKey = generateKey(newPin);
-
-        if (secretKey != null) {
-            dataManager.setOperator(newOperator);
-            dataManager.setPinCode(true);
-            return true;
+        if(listOperators!= null) {
+            for (String op :
+                    listOperators) {
+                if (s.contains(op))
+                    return true;
+            }
         }
-
         return false;
     }
 
-    private SecretKey generateKey(String newPin) {
-        try {
-            SecretKey secretKey = cryptoKeyManager.generateKey(newPin.toCharArray());
-            cryptoKeyManager.storeKey(newPin.toCharArray(), secretKey);
-            return secretKey;
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | KeyStoreException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    public SecretKey validateAndExtractKey(String pin) {
-        try {
-            return cryptoKeyManager.getSecretKey(pin.toCharArray());
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public boolean isActivatorPressed(String pin) {
-        String operator = dataManager.getOperator();
+    public boolean isActivatorPressed(String pin, String operator) {
         return operator.charAt(0) == pin.charAt(pin.length() - 1);
     }
 

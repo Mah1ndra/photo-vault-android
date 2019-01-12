@@ -4,12 +4,13 @@
     android:background="@color/white">
 
     <RelativeLayout
+        android:id="@+id/layout_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:elevation="4dp"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="16dp">
 
         <ImageButton
             android:id="@+id/btn_back"
@@ -33,6 +34,7 @@
 
     <ImageView
         android:id="@+id/iv_image_full"
+        android:layout_below="@id/layout_top_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />

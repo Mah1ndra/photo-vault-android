@@ -1,11 +1,13 @@
 package com.secure.calculatorp.ui.vault.type.photo;
 
-import com.secure.calculatorp.crypto.CryptoKeyManager;
-import com.secure.calculatorp.data.DataManager;
-import com.secure.calculatorp.util.StringUtil;
+import android.net.Uri;
 
-import java.nio.charset.StandardCharsets;
+import com.secure.calculatorp.crypto.CryptoManager;
+import com.secure.calculatorp.data.DataManager;
+
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
 
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
@@ -22,7 +24,7 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
     DataManager dataManager;
 
     @Inject
-    CryptoKeyManager cryptoKeyManager;
+    CryptoManager cryptoKeyManager;
 
     @Inject
     public PhotoPresenterContract() {
@@ -42,18 +44,17 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
     @Override
     public void onViewCreated() {
         try {
-            String iv = dataManager.getInitializationVector();
-            SecretKey secretKey = cryptoKeyManager.getSecretKey(dataManager.getTempPin().toCharArray());
-            if (secretKey != null && !StringUtil.isNullOrEmpty(iv)) {
-                mvpView.updateList(dataManager.getImageList(), secretKey, StringUtil.getIvBytesFromString(iv));
+            SecretKey secretKey = (SecretKey) cryptoKeyManager.retrieveKey(dataManager.getTempPin().toCharArray());
+            if (secretKey != null) {
+                mvpView.updateList(dataManager.getTempImages());
             }
-        } catch (KeyStoreException e) {
+        } catch (KeyStoreException | UnrecoverableEntryException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onImageClick(byte[] imageBytes) {
-        mvpView.showFullScreenImageView(imageBytes);
+    public void onImageClick(Uri uri) {
+        mvpView.showFullScreenImageView(uri);
     }
 }

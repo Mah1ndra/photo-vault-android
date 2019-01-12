@@ -115,12 +115,12 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
     }
 
     @Override
-    public void updateList(HashSet<Uri> imageList, SecretKey secretKey, byte[] bytes) {
-        photoAdapter.addItems(imageList, secretKey, bytes);
+    public void updateList(HashSet<Uri> imageList) {
+        photoAdapter.addItems(imageList);
     }
 
     @Override
-    public void showFullScreenImageView(byte[] uri) {
+    public void showFullScreenImageView(Uri uri) {
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         PhotoDialogFragment photoDialogFragment = PhotoDialogFragment.newInstance(uri, new PhotoDialogFragment.OnRestoreClickListener() {
@@ -143,8 +143,8 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
     }
 
     @Override
-    public void onListFragmentInteraction(byte[] imageBytes) {
-        presenter.onImageClick(imageBytes);
+    public void onListFragmentInteraction(Uri uri) {
+        presenter.onImageClick(uri);
     }
 
 }

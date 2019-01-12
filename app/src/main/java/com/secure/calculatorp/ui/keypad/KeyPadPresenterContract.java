@@ -1,7 +1,19 @@
 package com.secure.calculatorp.ui.keypad;
 
 import com.secure.calculatorp.crypto.CryptoConstant;
+import com.secure.calculatorp.crypto.CryptoManager;
+import com.secure.calculatorp.crypto.key.KeyGen;
+import com.secure.calculatorp.data.DataManager;
+import com.secure.calculatorp.ui.task.DecryptionTask;
+import com.secure.calculatorp.util.CommonUtils;
 
+import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
 /**
@@ -12,13 +24,18 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
 
     private PinValidator pinCodeValidator;
     private Calculator calculator;
+    private DataManager dataManager;
+    private CryptoManager cryptoManager;
     private V keyPadView;
 
 
     @Inject
-    KeyPadPresenterContract(PinValidator pinValidator, Calculator calculator) {
+    KeyPadPresenterContract(PinValidator pinValidator, Calculator calculator,
+                            DataManager dataManager, CryptoManager cryptoManager) {
         this.calculator = calculator;
         this.pinCodeValidator = pinValidator;
+        this.dataManager = dataManager;
+        this.cryptoManager = cryptoManager;
         calculator.init();
     }
 
@@ -28,18 +45,22 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
 
         if (pinCodeValidator.isPinPossible(pin)) {
             String strippedPin = pin.substring(0, pin.length() - 1);
-            if (!pinCodeValidator.hasPin()) {
+            if (!dataManager.hasPinCodeEnabled()) {
                 if (pin.length() > CryptoConstant.MIN_PIN_LENGTH) {
-                    if (pinCodeValidator.generateSecretKey(pin)) {
-                        keyPadView.showPinSuccessDialog();
-                        goToVault(strippedPin);
+                    if (generateSecretKey(pin)) {
+                        onPinCreated(strippedPin, null);
                     }
                 } else {
                     keyPadView.showPinErrorToast();
                 }
-            } else if (pinCodeValidator.isActivatorPressed(pin)) {
-                if(pinCodeValidator.validateAndExtractKey(strippedPin) != null) {
-                    goToVault(strippedPin);
+            } else if (pinCodeValidator.isActivatorPressed(pin, dataManager.getOperator())) {
+                try {
+                    Key key = cryptoManager.retrieveKey(strippedPin.toCharArray());
+                    if (key != null) {
+                        onPinCreated(strippedPin, key);
+                    }
+                } catch (KeyStoreException | UnrecoverableEntryException | NoSuchAlgorithmException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -47,16 +68,41 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
         keyPadView.setResultView(calculator.getStrKey(keyPressed));
     }
 
-    private void goToVault(String pin) {
+    private void onPinCreated(String pin, Key key) {
         calculator.setStrKey("0");
-        keyPadView.destroyActivity();
-        keyPadView.moveToVaultActivity(pin);
+        keyPadView.setResultView("0");
+        dataManager.setTempPin(pin);
+        if (key == null) {
+            moveToVaultActivity();
+        } else {
+            decryptImages(key);
+        }
+
     }
 
+    private void moveToVaultActivity() {
+        keyPadView.moveToVaultActivity();
+    }
+
+    private void decryptImages(Key key) {
+        DecryptionTask decryptionTask = new DecryptionTask(dataManager,
+                new DecryptionTask.DecryptionTaskCallback() {
+            @Override
+            public void onDecrypted() {
+                keyPadView.moveToVaultActivity();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+        decryptionTask.execute((SecretKey) key);
+    }
 
     @Override
     public void onVisibleScreen() {
-        if (!pinCodeValidator.hasPin()) {
+        if (!dataManager.hasPinCodeEnabled()) {
             calculator.setPinMode(true);
             keyPadView.showPinDialog();
         } else {
@@ -68,6 +114,31 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
     public void onHiddenScreen() {
         calculator.setStrKey("0");
         keyPadView.setResultView("0");
+    }
+
+    public boolean generateSecretKey(String pin) {
+        String newPin = pinCodeValidator.extractPin(pin);
+        String newOperator = pinCodeValidator.extractOperator(pin);
+
+        SecretKey secretKey = generateKey(newPin);
+
+        if (secretKey != null) {
+            dataManager.setOperator(newOperator);
+            dataManager.setPinCode(true);
+            return true;
+        }
+
+        return false;
+    }
+
+    private SecretKey generateKey(String newPin) {
+        try {
+            KeyGen.Config config = new KeyGen.Config(256, 2000, CommonUtils.generateRandom(32), newPin.toCharArray());
+            return (SecretKey) cryptoManager.generateKey(config);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | KeyStoreException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

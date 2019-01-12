@@ -238,6 +238,11 @@ public class KeyPad extends GridLayout {
         return result;
     }
 
+    @Override
+    public void addOnUnhandledKeyEventListener(OnUnhandledKeyEventListener listener) {
+        super.addOnUnhandledKeyEventListener(listener);
+    }
+
     public void setKeyUpdateListener(OnKeyUpdateListener keyUpdateListener) {
         this.keyUpdateListener = keyUpdateListener;
     }

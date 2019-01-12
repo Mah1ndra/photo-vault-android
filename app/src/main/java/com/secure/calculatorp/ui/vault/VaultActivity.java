@@ -15,7 +15,7 @@ import com.secure.calculatorp.R;
 import com.secure.calculatorp.ui.base.BaseActivity;
 import com.secure.calculatorp.ui.vault.type.photo.PhotoFragment;
 import com.secure.calculatorp.util.AppConstants;
-import com.secure.calculatorp.util.CommonUtils;
+import com.secure.calculatorp.util.DialogUtil;
 
 import javax.inject.Inject;
 
@@ -96,7 +96,6 @@ public class VaultActivity extends BaseActivity implements VaultView {
     @Override
     protected void onStop() {
         super.onStop();
-        finish();
     }
 
     @OnClick(R.id.fab)
@@ -128,21 +127,20 @@ public class VaultActivity extends BaseActivity implements VaultView {
     }
 
     @Override
+    public void encryptionErrorDialog() {
+        DialogUtil.showAlert(getString(R.string.title_encryption_error),
+                getString(R.string.message_encryption_error),
+                VaultActivity.this);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         if (requestCode == AppConstants.REQUEST_CODE_FILE_SELECTION && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                presenter.onSelectedData(resultData);
+                presenter.onImageSelected(resultData);
             }
         }
-    }
-
-    @Override
-    public String getPinCode() {
-        if (getIntent() != null) {
-            return getIntent().getStringExtra(AppConstants.INTENT_PIN_EXTRA);
-        }
-        return "";
     }
 
 }
