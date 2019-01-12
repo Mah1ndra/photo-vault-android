@@ -20,14 +20,23 @@
         android:gravity="end|center_vertical"
         android:paddingEnd="16dp"
         android:elevation="4dp"
+        android:visibility="visible"
         android:text="@string/str_zero"
         android:textSize="56sp" />
 
     <com.secure.calculatorp.ui.custom.KeyPad
         android:id="@+id/layout_keypad"
         android:layout_weight="7"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_weight="10"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -16,20 +16,20 @@ import javax.crypto.SecretKey;
  * Created by zakir on 11/01/2019.
  */
 
-public class DecryptionTask extends BaseAsyncTask<SecretKey, String, Boolean> {
+public class EncryptionTask extends AsyncTask<SecretKey, String, Boolean> {
 
     private DataManager dataManager;
     private DecryptionTaskCallback decryptionTaskCallback;
 
-    public DecryptionTask(DataManager dataManager,
+    public EncryptionTask(DataManager dataManager,
                           DecryptionTaskCallback decryptionTaskCallback) {
-        super(decryptionTaskCallback);
         this.dataManager = dataManager;
         this.decryptionTaskCallback = decryptionTaskCallback;
     }
 
-    public interface DecryptionTaskCallback extends AsyncCallback{
+    public interface DecryptionTaskCallback {
         void onDecrypted();
+
         void onError();
     }
 
@@ -54,7 +54,17 @@ public class DecryptionTask extends BaseAsyncTask<SecretKey, String, Boolean> {
         } else {
             decryptionTaskCallback.onError();
         }
-        super.onPostExecute(result);
     }
 
+
+    @Override
+    protected void onPreExecute() {
+
+    }
+
+
+    @Override
+    protected void onProgressUpdate(String... text) {
+
+    }
 }

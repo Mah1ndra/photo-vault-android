@@ -40,6 +40,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     CryptoManager cryptoManager;
 
     private VaultView mvpView;
+    private boolean isPausedForSelection = false;
 
     @Inject
     public VaultPresenterContract() {
@@ -63,7 +64,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     }
 
     @Override
-    public void onVisibleScreen() {
+    public void onScreenVisible() {
         if (!mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
                 || !mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             mvpView.requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -80,7 +81,21 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
 
     @Override
     public void onImageSelected(Intent intent) {
+        isPausedForSelection = false;
         encryptData(intent);
+    }
+
+    @Override
+    public void onScreenHidden() {
+        if (!isPausedForSelection) {
+            dataManager.removeTempImages();
+            mvpView.destroyActivity();
+        }
+    }
+
+    @Override
+    public void onPausedForSelection() {
+        isPausedForSelection = true;
     }
 
     private void encryptData(Intent intent) {
@@ -88,7 +103,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
         SecretKey secretKey = getKey();
 
         if (secretKey != null) {
-            if(encryptData(intent, secretKey)){
+            if (encryptData(intent, secretKey)) {
                 try {
                     dataManager.createTempImages(secretKey);
                 } catch (IOException | NoSuchAlgorithmException

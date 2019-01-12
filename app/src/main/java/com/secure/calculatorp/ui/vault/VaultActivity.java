@@ -38,6 +38,8 @@ public class VaultActivity extends BaseActivity implements VaultView {
     @BindView(R.id.fab)
     FloatingActionButton actionButton;
 
+    private boolean onPauseForFileSelection = false;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -90,7 +92,13 @@ public class VaultActivity extends BaseActivity implements VaultView {
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.onVisibleScreen();
+        presenter.onScreenVisible();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.onScreenHidden();
     }
 
     @Override
@@ -116,10 +124,8 @@ public class VaultActivity extends BaseActivity implements VaultView {
 
     @Override
     public void openFileBrowser() {
-
-
+        presenter.onPausedForSelection();
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.setType("image/*");
@@ -131,6 +137,11 @@ public class VaultActivity extends BaseActivity implements VaultView {
         DialogUtil.showAlert(getString(R.string.title_encryption_error),
                 getString(R.string.message_encryption_error),
                 VaultActivity.this);
+    }
+
+    @Override
+    public void destroyActivity() {
+        finish();
     }
 
     @Override

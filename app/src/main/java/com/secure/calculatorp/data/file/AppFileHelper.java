@@ -16,6 +16,8 @@ import com.secure.calculatorp.util.AppConstants;
 import com.secure.calculatorp.util.CommonUtils;
 import com.secure.calculatorp.util.StringUtil;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -143,6 +145,16 @@ public class AppFileHelper implements FileHelper {
         }
     }
 
+    @Override
+    public boolean storeImage(ArrayList<FileModel> fileModels, SecretKey secretKey) throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
+        for (FileModel image :
+                fileModels) {
+            storeImage(image, secretKey);
+        }
+        return true;
+    }
+
     public String generateFileName(FileModel fileModel) {
         return "" + StringUtil.byteArrayToHexString(fileModel.getIv()) +
                 "." + getExtension(fileModel.getUri());
@@ -157,20 +169,14 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public boolean storeImage(ArrayList<FileModel> fileModels, SecretKey secretKey) throws NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
-        for (FileModel image :
-                fileModels) {
-            storeImage(image, secretKey);
+    public void removeTempImages() {
+        try {
+            FileUtils.deleteDirectory(getInternalTempDirectory());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return true;
     }
 
-    private boolean alreadyExist(Uri enc, Uri temp) {
-        String encryptedFile = new File(enc.getPath()).getName();
-        String tempFile = new File(temp.getPath()).getName();
-        return encryptedFile.equals(tempFile);
-    }
 
     private String getFileNameWithoutExtension(Uri uri) {
         if (uri != null) {
@@ -215,11 +221,6 @@ public class AppFileHelper implements FileHelper {
             }
         }
         return generateFileName();
-    }
-
-    @Override
-    public void removeTempImages() {
-
     }
 
     private void copyFile(Uri src, File dst) throws IOException {

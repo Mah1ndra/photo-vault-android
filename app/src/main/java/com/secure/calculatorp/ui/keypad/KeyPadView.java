@@ -16,4 +16,6 @@ public interface KeyPadView extends BaseMvpView{
     void setResultView(String result);
     void destroyActivity();
     void moveToVaultActivity();
+    void showProgress();
+    void hideProgress();
 }

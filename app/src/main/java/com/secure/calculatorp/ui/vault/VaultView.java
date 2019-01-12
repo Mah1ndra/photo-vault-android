@@ -12,4 +12,5 @@ public interface VaultView extends BaseMvpView{
     void switchFragment(AppConstants.Fragment fragment);
     void openFileBrowser();
     void encryptionErrorDialog();
+    void destroyActivity();
 }

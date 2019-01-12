@@ -87,16 +87,27 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
     private void decryptImages(Key key) {
         DecryptionTask decryptionTask = new DecryptionTask(dataManager,
                 new DecryptionTask.DecryptionTaskCallback() {
-            @Override
-            public void onDecrypted() {
-                keyPadView.moveToVaultActivity();
-            }
+                    @Override
+                    public void onStart() {
+                        keyPadView.showProgress();
+                    }
 
-            @Override
-            public void onError() {
+                    @Override
+                    public void onStop() {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onDecrypted() {
+                        keyPadView.moveToVaultActivity();
+                        keyPadView.destroyActivity();
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
         decryptionTask.execute((SecretKey) key);
     }
 

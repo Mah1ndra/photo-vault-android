@@ -3,6 +3,8 @@ package com.secure.calculatorp.ui.keypad;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ public class KeyPadActivity extends BaseActivity implements KeyPadView {
     @BindView(R.id.et_key)
     TextView etKey;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,18 @@ public class KeyPadActivity extends BaseActivity implements KeyPadView {
     public void moveToVaultActivity() {
         Intent intent = new Intent(KeyPadActivity.this, VaultActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void showProgress() {
+        keyPad.setVisibility(View.GONE);
+        etKey.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+
     }
 
     @Override

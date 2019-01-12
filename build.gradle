@@ -39,6 +39,7 @@ ext {
 
     rx2FastAndroidNetworking = '1.0.1'
 
+    apacheCommonVersion = "2.6"
     imageViewerVersions = '0.1.0'
     dagger2Version = '2.8'
     butterKnifeVersion = '9.0.0-rc3'

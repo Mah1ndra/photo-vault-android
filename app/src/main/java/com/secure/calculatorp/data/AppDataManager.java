@@ -156,7 +156,7 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void removeTempImages() {
-
+        mFileHelper.removeTempImages();
     }
 
 }
