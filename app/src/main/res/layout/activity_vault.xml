@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:elevation="8dp"
+        android:visibility="gone"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation" />
 
@@ -35,9 +36,9 @@
         android:layout_gravity="bottom|end"
         android:elevation="8dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:layout_above="@id/navigation_vault"
         android:src="@drawable/ic_add_black_24dp"
         android:focusable="true" />
 </RelativeLayout>

@@ -154,4 +154,13 @@ public class VaultActivity extends BaseActivity implements VaultView {
         }
     }
 
+    @Override
+    public void showLoading() {
+        super.showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        super.hideLoading();
+    }
 }

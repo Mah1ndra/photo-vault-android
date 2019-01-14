@@ -34,7 +34,7 @@ public class PinValidator {
     public void initOperators() {
         listOperators.add("+");
         listOperators.add("-");
-        listOperators.add("*");
+        listOperators.add("x");
         listOperators.add("/");
         listOperators.add("%");
     }

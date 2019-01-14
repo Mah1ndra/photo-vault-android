@@ -43,15 +43,12 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
     public void handleKeyInput(String keyPressed) {
         String pin = calculator.getString(keyPressed);
 
-        if (pinCodeValidator.isPinPossible(pin)) {
+        if (pin.length() > CryptoConstant.MIN_PIN_LENGTH &&
+                pinCodeValidator.isPinPossible(pin)) {
             String strippedPin = pin.substring(0, pin.length() - 1);
             if (!dataManager.hasPinCodeEnabled()) {
-                if (pin.length() > CryptoConstant.MIN_PIN_LENGTH) {
-                    if (generateSecretKey(pin)) {
-                        onPinCreated(strippedPin, null);
-                    }
-                } else {
-                    keyPadView.showPinErrorToast();
+                if (generateSecretKey(pin)) {
+                    onPinCreated(strippedPin, null);
                 }
             } else if (pinCodeValidator.isActivatorPressed(pin, dataManager.getOperator())) {
                 try {
@@ -63,6 +60,11 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
                     e.printStackTrace();
                 }
             }
+        }
+
+        else if (pin.length() == 1 &&
+                pinCodeValidator.isPinPossible(pin)) {
+            return;
         }
 
         keyPadView.setResultView(calculator.getStrKey(keyPressed));

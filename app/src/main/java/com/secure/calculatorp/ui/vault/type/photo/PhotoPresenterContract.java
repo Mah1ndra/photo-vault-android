@@ -64,6 +64,11 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
     }
 
     @Override
+    public void onRefresh() {
+        onViewCreated();
+    }
+
+    @Override
     public void onImageClick(Uri uri) {
         mvpView.showFullScreenImageView(uri);
     }

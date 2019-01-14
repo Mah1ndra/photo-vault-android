@@ -4,16 +4,19 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.secure.calculatorp.R;
 import com.secure.calculatorp.crypto.CryptoManager;
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.data.model.FileModel;
+import com.secure.calculatorp.ui.task.EncryptionTask;
 import com.secure.calculatorp.util.AppConstants;
 import com.secure.calculatorp.util.CommonUtils;
 import com.secure.calculatorp.util.StringUtil;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -39,7 +42,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     @Inject
     CryptoManager cryptoManager;
 
-    private VaultView mvpView;
+    private VaultView vaultView;
     private boolean isPausedForSelection = false;
 
     @Inject
@@ -49,35 +52,35 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
 
     @Override
     public void onAttach(V mvpView) {
-        this.mvpView = mvpView;
+        this.vaultView = mvpView;
     }
 
     @Override
     public void onNavItemSelected(int navigationId) {
         if (navigationId == R.id.navigation_photos) {
-            mvpView.switchFragment(AppConstants.Fragment.PHOTO);
+            vaultView.switchFragment(AppConstants.Fragment.PHOTO);
         } else if (navigationId == R.id.navigation_videos) {
-//            mvpView.switchFragment(AppConstants.Fragment.PHOTO);
+//            vaultView.switchFragment(AppConstants.Fragment.PHOTO);
         } else if (navigationId == R.id.navigation_file) {
-//            mvpView.switchFragment(AppConstants.Fragment.PHOTO);
+//            vaultView.switchFragment(AppConstants.Fragment.PHOTO);
         }
     }
 
     @Override
     public void onScreenVisible() {
         isPausedForSelection = false;
-        if (!mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
-                || !mvpView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            mvpView.requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+        if (!vaultView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+                || !vaultView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            vaultView.requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, AppConstants.PERMISSION_EXTERNAL_STORAGE_CODE);
         } else {
-            mvpView.switchFragment(AppConstants.Fragment.PHOTO);
+            vaultView.switchFragment(AppConstants.Fragment.PHOTO);
         }
     }
 
     @Override
     public void onAddClick() {
-        mvpView.openFileBrowser();
+        vaultView.openFileBrowser();
     }
 
     @Override
@@ -90,7 +93,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     public void onScreenHidden() {
         if (!isPausedForSelection) {
             dataManager.removeTempImages();
-            mvpView.destroyActivity();
+            vaultView.destroyActivity();
         }
     }
 
@@ -104,35 +107,58 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
         SecretKey secretKey = getKey();
 
         if (secretKey != null) {
-            if (encryptData(intent, secretKey)) {
-                try {
-                    dataManager.createTempImages(secretKey);
-                } catch (IOException | NoSuchAlgorithmException
-                        | NoSuchPaddingException
-                        | InvalidAlgorithmParameterException | InvalidKeyException e) {
-                    mvpView.encryptionErrorDialog();
+
+            EncryptionTask encryptionTask = new EncryptionTask(dataManager, createData(intent),
+                    new EncryptionTask.EncryptionTaskCallback() {
+                @Override
+                public void onEncrypted() {
+                    try {
+                        dataManager.createTempImages(secretKey);
+                    } catch (IOException | NoSuchAlgorithmException
+                            | NoSuchPaddingException
+                            | InvalidAlgorithmParameterException | InvalidKeyException e) {
+                        vaultView.encryptionErrorDialog();
+                    }
                 }
-            }
+
+                @Override
+                public void onError() {
+
+                }
+
+                @Override
+                public void onStart() {
+                    vaultView.showLoading();
+                }
+
+                @Override
+                public void onStop() {
+                    vaultView.hideLoading();
+                }
+            });
+
+            encryptionTask.execute(secretKey);
         }
     }
 
-    private boolean encryptData(Intent intent, SecretKey secretKey) {
+    private ArrayList<FileModel> createData(Intent intent) {
         try {
             if (intent.getData() != null) {
-                return dataManager.storeImage(createFileModel(intent.getData()), secretKey);
+                return createFileModel(intent.getData());
             } else if (intent.getClipData() != null) {
-                return dataManager.storeImage(getUriListFromIntent(intent.getClipData()), secretKey);
+                return getUriListFromIntent(intent.getClipData());
             }
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException
-                | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
-        return false;
+        return null;
     }
 
-    private FileModel createFileModel(Uri uri) {
-        return new FileModel(uri, CommonUtils.generateRandom(16));
+    private ArrayList<FileModel> createFileModel(Uri uri) {
+        ArrayList<FileModel> fileModels = new ArrayList<>();
+        fileModels.add(new FileModel(uri, CommonUtils.generateRandom(16)));
+        return fileModels;
     }
 
     private SecretKey getKey() {

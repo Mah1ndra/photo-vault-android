@@ -13,4 +13,6 @@ public interface VaultView extends BaseMvpView{
     void openFileBrowser();
     void encryptionErrorDialog();
     void destroyActivity();
+    void showLoading();
+    void hideLoading();
 }

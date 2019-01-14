@@ -8,6 +8,7 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,6 +40,9 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
 
     @BindView(R.id.list_recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R.id.swipe_photo_layout)
+    SwipeRefreshLayout swipeLayout;
 
     @Inject
     PhotoPresenter<PhotoView> presenter;
@@ -78,7 +82,7 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
         photoAdapter.setmListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         recyclerView.setAdapter(photoAdapter);
-
+        swipeLayout.setOnRefreshListener(() -> presenter.onRefresh());
         return view;
     }
 
@@ -117,6 +121,7 @@ public class PhotoFragment extends BaseFragment implements PhotoView, PhotoAdapt
     @Override
     public void updateList(HashSet<Uri> imageList) {
         photoAdapter.addItems(imageList);
+        swipeLayout.setRefreshing(false);
     }
 
     @Override
