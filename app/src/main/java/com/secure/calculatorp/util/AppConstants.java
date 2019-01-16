@@ -10,7 +10,6 @@ public class AppConstants {
     public static final int REQUEST_CODE_FILE_SELECTION = 101;
     public static final String LOCATION_INTERNAL_IMAGE = "image";
     public static final String LOCATION_INTERNAL_TEMP = "temp";
-    public static final String INTENT_PIN_EXTRA = "intent_pin_extra";
     public static final String FILE_FROM_CONTENT = "content";
     public static final String FILE_FROM_FILE = "file";
     public static final String EMPTY_STRING = "";

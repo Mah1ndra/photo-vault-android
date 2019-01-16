@@ -31,13 +31,12 @@ import com.secure.calculatorp.crypto.operation.AppCryptoOperation;
 import com.secure.calculatorp.crypto.operation.CryptoOperation;
 import com.secure.calculatorp.data.AppDataManager;
 import com.secure.calculatorp.data.DataManager;
-import com.secure.calculatorp.data.file.AppFileHelper;
+import com.secure.calculatorp.data.file.AppCryptoFileHelper;
 import com.secure.calculatorp.data.file.FileHelper;
 import com.secure.calculatorp.data.prefs.AppPreferencesHelper;
 import com.secure.calculatorp.data.prefs.PreferencesHelper;
 import com.secure.calculatorp.di.ApplicationContext;
 import com.secure.calculatorp.di.PreferenceInfo;
-import com.secure.calculatorp.threading.ThreadExecutor;
 import com.secure.calculatorp.ui.keypad.Calculator;
 import com.secure.calculatorp.ui.keypad.PinValidator;
 import com.secure.calculatorp.util.AppConstants;
@@ -91,7 +90,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    FileHelper provideFileHelper(AppFileHelper appPreferencesHelper) {
+    FileHelper provideFileHelper(AppCryptoFileHelper appPreferencesHelper) {
         return appPreferencesHelper;
     }
 
@@ -129,10 +128,6 @@ public class ApplicationModule {
         return calculator;
     }
 
-//    @Provides
-//    ThreadExecutor provideThreadPoolExecutor(ThreadExecutor threadExecutor) {
-//        return threadExecutor;
-//    }
 
     @Provides
     @Singleton

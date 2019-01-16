@@ -92,15 +92,6 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
 
     private void decryptImages(Key key) {
 
-//        try {
-//            keyPadView.showProgress();
-//            dataManager.createTemporaryImages((SecretKey) key);
-//            keyPadView.moveToVaultActivity();
-//            keyPadView.destroyActivity();
-//        } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
-//                | InvalidAlgorithmParameterException | InvalidKeyException e) {
-//            e.printStackTrace();
-//        }
         DecryptionTask decryptionTask = new DecryptionTask(dataManager,
                 new DecryptionTask.DecryptionTaskCallback() {
                     @Override

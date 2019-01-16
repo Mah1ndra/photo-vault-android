@@ -42,7 +42,7 @@ import javax.inject.Inject;
  * Created by zakir on 06/01/2019.
  */
 
-public class AppFileHelper implements FileHelper {
+public class AppCryptoFileHelper implements FileHelper {
 
 
     private Context context;
@@ -50,8 +50,8 @@ public class AppFileHelper implements FileHelper {
     private ThreadExecutor threadExecutor;
 
     @Inject
-    public AppFileHelper(@ApplicationContext Context context, CryptoManager appCryptoOperationManager,
-                         ThreadExecutor threadExecutor) {
+    public AppCryptoFileHelper(@ApplicationContext Context context, CryptoManager appCryptoOperationManager,
+                               ThreadExecutor threadExecutor) {
         this.context = context;
         this.cryptoManager = appCryptoOperationManager;
         this.threadExecutor = threadExecutor;
@@ -104,25 +104,18 @@ public class AppFileHelper implements FileHelper {
         outputStream.close();
     }
 
-    private File getEncryptedFile(FileModel src) {
-        return new File(getInternalImageDirectory(), generateFileName(src));
-    }
-
     @Override
     public void createTemporaryImages(SecretKey secretKey) {
         HashSet<Uri> imageList = getEncryptedImages();
         threadExecutor.createPool();
         for (Uri uri : imageList) {
 
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        createDecryptionRunnable(uri, secretKey);
-                    } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
-                            | InvalidKeyException | InvalidAlgorithmParameterException e) {
-                        e.printStackTrace();
-                    }
+            Runnable runnable = () -> {
+                try {
+                    createDecryptionRunnable(uri, secretKey);
+                } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
+                        | InvalidKeyException | InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
                 }
             };
 
@@ -149,30 +142,6 @@ public class AppFileHelper implements FileHelper {
             fileOutputStream.close();
         }
         arrayOutputStream.close();
-    }
-
-    private String generateFileName() {
-        return Arrays.toString(CommonUtils.generateRandom(16));
-    }
-
-    @Override
-    public HashSet<Integer> getVideoList() {
-        return null;
-    }
-
-    @Override
-    public HashSet<Integer> getDocumentList() {
-        return null;
-    }
-
-    @Override
-    public boolean deleteImageFromPublicStorage(Uri uri) {
-        try {
-            return DocumentFile.fromSingleUri(context, uri).delete();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     @Override
@@ -208,6 +177,34 @@ public class AppFileHelper implements FileHelper {
             storeEncryptedImage(image, secretKey);
         }
         return true;
+    }
+
+    private File getEncryptedFile(FileModel src) {
+        return new File(getInternalImageDirectory(), generateFileName(src));
+    }
+
+    private String generateFileName() {
+        return Arrays.toString(CommonUtils.generateRandom(16));
+    }
+
+    @Override
+    public HashSet<Integer> getVideoList() {
+        return null;
+    }
+
+    @Override
+    public HashSet<Integer> getDocumentList() {
+        return null;
+    }
+
+    @Override
+    public boolean deleteImageFromPublicStorage(Uri uri) {
+        try {
+            return DocumentFile.fromSingleUri(context, uri).delete();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String generateFileName(FileModel fileModel) {

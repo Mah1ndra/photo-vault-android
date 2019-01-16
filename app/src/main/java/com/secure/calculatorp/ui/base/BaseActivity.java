@@ -41,11 +41,6 @@ import com.secure.calculatorp.util.DialogUtil;
 
 import butterknife.Unbinder;
 
-
-/**
- * Created by janisharali on 27/01/17.
- */
-
 public abstract class BaseActivity extends AppCompatActivity implements BaseMvpView{
 
     private ProgressDialog mProgressDialog;
