@@ -69,6 +69,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
         isPausedForSelection = false;
         if (!vaultView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
                 || !vaultView.isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            isPausedForSelection = true;
             vaultView.requestPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, AppConstants.PERMISSION_EXTERNAL_STORAGE_CODE);
         } else {
