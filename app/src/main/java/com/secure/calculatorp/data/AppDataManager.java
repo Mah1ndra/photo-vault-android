@@ -118,8 +118,8 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public HashSet<Uri> getTempImages() {
-        return mFileHelper.getTempImages();
+    public HashSet<Uri> getTemporaryImages() {
+        return mFileHelper.getTemporaryImages();
     }
 
     @Override
@@ -133,35 +133,35 @@ public class AppDataManager implements DataManager {
     }
 
     @Override
-    public boolean deleteExternalImage(Uri uri) {
-        return mFileHelper.deleteExternalImage(uri);
+    public boolean deleteImageFromPublicStorage(Uri uri) {
+        return mFileHelper.deleteImageFromPublicStorage(uri);
     }
 
     @Override
-    public boolean restoreImage(Uri uri) {
-        return mFileHelper.restoreImage(uri);
+    public boolean restoreImageToPublicStorage(Uri uri) {
+        return mFileHelper.restoreImageToPublicStorage(uri);
     }
 
     @Override
-    public boolean storeImage(FileModel src, SecretKey secretKey) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
-        return mFileHelper.storeImage(src,secretKey);
+    public boolean storeEncryptedImage(FileModel src, SecretKey secretKey) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
+        return mFileHelper.storeEncryptedImage(src,secretKey);
     }
 
     @Override
-    public boolean storeImage(ArrayList<FileModel> uri, SecretKey secretKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
-        return mFileHelper.storeImage(uri,secretKey);
+    public boolean storeEncryptedImage(ArrayList<FileModel> uri, SecretKey secretKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
+        return mFileHelper.storeEncryptedImage(uri,secretKey);
     }
 
     @Override
-    public void createTempImages(SecretKey secretKey) throws IOException,
+    public void createTemporaryImages(SecretKey secretKey) throws IOException,
             InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             InvalidKeyException, NoSuchPaddingException {
-        mFileHelper.createTempImages(secretKey);
+        mFileHelper.createTemporaryImages(secretKey);
     }
 
     @Override
-    public void removeTempImages() {
-        mFileHelper.removeTempImages();
+    public void removeTemporaryImages() {
+        mFileHelper.removeTemporaryImages();
     }
 
 }

@@ -10,7 +10,7 @@
         android:background="@color/colorPrimary"
         android:elevation="4dp"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="8dp">
 
         <ImageButton
             android:id="@+id/btn_back"

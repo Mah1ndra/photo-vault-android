@@ -7,12 +7,16 @@ import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.ui.task.DecryptionTask;
 import com.secure.calculatorp.util.CommonUtils;
 
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
 import java.security.spec.InvalidKeySpecException;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
@@ -87,6 +91,16 @@ public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPres
     }
 
     private void decryptImages(Key key) {
+
+//        try {
+//            keyPadView.showProgress();
+//            dataManager.createTemporaryImages((SecretKey) key);
+//            keyPadView.moveToVaultActivity();
+//            keyPadView.destroyActivity();
+//        } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
+//                | InvalidAlgorithmParameterException | InvalidKeyException e) {
+//            e.printStackTrace();
+//        }
         DecryptionTask decryptionTask = new DecryptionTask(dataManager,
                 new DecryptionTask.DecryptionTaskCallback() {
                     @Override

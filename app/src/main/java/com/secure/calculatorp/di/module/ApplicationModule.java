@@ -37,6 +37,7 @@ import com.secure.calculatorp.data.prefs.AppPreferencesHelper;
 import com.secure.calculatorp.data.prefs.PreferencesHelper;
 import com.secure.calculatorp.di.ApplicationContext;
 import com.secure.calculatorp.di.PreferenceInfo;
+import com.secure.calculatorp.threading.ThreadExecutor;
 import com.secure.calculatorp.ui.keypad.Calculator;
 import com.secure.calculatorp.ui.keypad.PinValidator;
 import com.secure.calculatorp.util.AppConstants;
@@ -127,6 +128,11 @@ public class ApplicationModule {
     Calculator provideCalculator(Calculator calculator) {
         return calculator;
     }
+
+//    @Provides
+//    ThreadExecutor provideThreadPoolExecutor(ThreadExecutor threadExecutor) {
+//        return threadExecutor;
+//    }
 
     @Provides
     @Singleton

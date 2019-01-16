@@ -77,7 +77,6 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
-
     }
 
     @Override
@@ -87,6 +86,8 @@ public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDial
 
     @Override
     public void onStart() {
+
+        getDialog().getWindow().setWindowAnimations(R.style.AppTheme_FullScreenDialog);
         super.onStart();
         presenter.onViewCreated();
     }

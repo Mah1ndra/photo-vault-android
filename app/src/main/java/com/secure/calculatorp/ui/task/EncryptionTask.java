@@ -1,7 +1,5 @@
 package com.secure.calculatorp.ui.task;
 
-import android.os.AsyncTask;
-
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.data.model.FileModel;
 
@@ -44,7 +42,7 @@ public class EncryptionTask extends BaseAsyncTask<SecretKey, String, Boolean> {
     protected Boolean doInBackground(SecretKey... params) {
         SecretKey secretKey = params[0];
         try {
-            dataManager.storeImage(fileModels, secretKey);
+            dataManager.storeEncryptedImage(fileModels, secretKey);
         } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
                 | InvalidAlgorithmParameterException | InvalidKeyException e) {
             return false;

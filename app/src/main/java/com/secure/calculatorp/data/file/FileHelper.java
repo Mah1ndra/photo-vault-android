@@ -20,24 +20,24 @@ import javax.crypto.SecretKey;
 
 public interface FileHelper {
 
-    boolean deleteExternalImage(Uri uri);
-    boolean restoreImage(Uri uri);
+    boolean deleteImageFromPublicStorage(Uri uri);
+    boolean restoreImageToPublicStorage(Uri uri);
 
-    boolean storeImage(FileModel src, SecretKey secretKey)
+    boolean storeEncryptedImage(FileModel src, SecretKey secretKey)
             throws IOException, InvalidAlgorithmParameterException,
             NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException;
 
-    boolean storeImage(ArrayList<FileModel> imageFiles, SecretKey secretKey)
+    boolean storeEncryptedImage(ArrayList<FileModel> imageFiles, SecretKey secretKey)
             throws NoSuchAlgorithmException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, InvalidKeyException, IOException;
 
-    void createTempImages(SecretKey secretKey)
+    void createTemporaryImages(SecretKey secretKey)
             throws IOException, NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException,
             InvalidKeyException;
 
-    void removeTempImages();
-    HashSet<Uri> getTempImages();
+    void removeTemporaryImages();
+    HashSet<Uri> getTemporaryImages();
     HashSet<Integer> getVideoList();
     HashSet<Integer> getDocumentList();
 }

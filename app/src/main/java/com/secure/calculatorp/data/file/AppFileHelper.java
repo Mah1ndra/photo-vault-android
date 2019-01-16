@@ -13,6 +13,7 @@ import com.secure.calculatorp.R;
 import com.secure.calculatorp.crypto.CryptoManager;
 import com.secure.calculatorp.data.model.FileModel;
 import com.secure.calculatorp.di.ApplicationContext;
+import com.secure.calculatorp.threading.ThreadExecutor;
 import com.secure.calculatorp.util.AppConstants;
 import com.secure.calculatorp.util.CommonUtils;
 import com.secure.calculatorp.util.StringUtil;
@@ -46,82 +47,108 @@ public class AppFileHelper implements FileHelper {
 
     private Context context;
     private CryptoManager cryptoManager;
+    private ThreadExecutor threadExecutor;
 
     @Inject
-    public AppFileHelper(@ApplicationContext Context context, CryptoManager appCryptoOperationManager) {
+    public AppFileHelper(@ApplicationContext Context context, CryptoManager appCryptoOperationManager,
+                         ThreadExecutor threadExecutor) {
         this.context = context;
         this.cryptoManager = appCryptoOperationManager;
+        this.threadExecutor = threadExecutor;
     }
 
 
     @Override
-    public HashSet<Uri> getTempImages() {
-        HashSet<Uri> uriHashSet = new HashSet<>();
-
+    public HashSet<Uri> getTemporaryImages() {
         File dir = getInternalTempDirectory();
-        if (dir != null && dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            for (File file :
-                    files) {
-                uriHashSet.add(Uri.parse(file.getAbsolutePath()));
-            }
-        }
-        return uriHashSet;
+        return getFileListInDirectory(dir);
     }
 
     private HashSet<Uri> getEncryptedImages() {
-        HashSet<Uri> uriHashSet = new HashSet<>();
-
         File dir = getInternalImageDirectory();
+        return getFileListInDirectory(dir);
+    }
+
+    private HashSet<Uri> getFileListInDirectory(File dir) {
+        HashSet<Uri> fileSet = new HashSet<>();
         if (dir != null && dir.isDirectory()) {
             File[] files = dir.listFiles();
             for (File file :
                     files) {
-                uriHashSet.add(Uri.parse(file.getAbsolutePath()));
+                fileSet.add(Uri.parse(file.getAbsolutePath()));
             }
         }
-        return uriHashSet;
+        return fileSet;
     }
 
     @Override
-    public boolean storeImage(FileModel src, SecretKey secretKey) throws IOException,
+    public boolean storeEncryptedImage(FileModel src, SecretKey secretKey) throws IOException,
             InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException,
             NoSuchPaddingException {
-        File des = new File(getInternalImageDirectory(), generateFileName(src));
+        File des = getEncryptedFile(src);
         FileInputStream inputStream = (FileInputStream) context.getContentResolver().openInputStream(src.getUri());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        encryptFile(des, src, secretKey, inputStream, outputStream);
+        deleteImageFromPublicStorage(src.getUri());
+        return true;
+    }
+
+    private void encryptFile(File des, FileModel src, SecretKey secretKey,
+                             FileInputStream inputStream, ByteArrayOutputStream outputStream)
+            throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IOException {
         cryptoManager.encrypt(inputStream, outputStream, secretKey, src.getIv());
         try (FileOutputStream fileOutputStream = new FileOutputStream(des)) {
             outputStream.writeTo(fileOutputStream);
             fileOutputStream.close();
         }
         outputStream.close();
-        deleteExternalImage(src.getUri());
-        return true;
+    }
+
+    private File getEncryptedFile(FileModel src) {
+        return new File(getInternalImageDirectory(), generateFileName(src));
     }
 
     @Override
-    public void createTempImages(SecretKey secretKey) throws IOException, NoSuchAlgorithmException,
-            NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
-
+    public void createTemporaryImages(SecretKey secretKey) {
         HashSet<Uri> imageList = getEncryptedImages();
+        threadExecutor.createPool();
         for (Uri uri : imageList) {
-            File tempFile = new File(generateTempFileName(uri));
-            if (tempFile.exists()) {
-                continue;
-            }
 
-            String ivSrc = getFileNameWithoutExtension(uri);
-            byte[] iv = StringUtil.hexStringToByteArray(ivSrc);
-            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-            FileInputStream file = new FileInputStream(uri.getPath());
-            cryptoManager.decrypt(file, arrayOutputStream, secretKey, iv);
-            try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
-                arrayOutputStream.writeTo(fileOutputStream);
-                fileOutputStream.close();
-            }
-            arrayOutputStream.close();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        createDecryptionRunnable(uri, secretKey);
+                    } catch (IOException | NoSuchAlgorithmException | NoSuchPaddingException
+                            | InvalidKeyException | InvalidAlgorithmParameterException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            threadExecutor.execute(runnable);
         }
+        threadExecutor.shutdown();
+        threadExecutor.awaitTermination();
+    }
+
+    private void createDecryptionRunnable(Uri uri, SecretKey secretKey)
+            throws IOException, NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+        File tempFile = new File(generateTempFileName(uri));
+        if (tempFile.exists()) {
+            return;
+        }
+        String ivSrc = getFileNameWithoutExtension(uri);
+        byte[] iv = StringUtil.hexStringToByteArray(ivSrc);
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        FileInputStream file = new FileInputStream(uri.getPath());
+        cryptoManager.decrypt(file, arrayOutputStream, secretKey, iv);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+            arrayOutputStream.writeTo(fileOutputStream);
+            fileOutputStream.close();
+        }
+        arrayOutputStream.close();
     }
 
     private String generateFileName() {
@@ -139,7 +166,7 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public boolean deleteExternalImage(Uri uri) {
+    public boolean deleteImageFromPublicStorage(Uri uri) {
         try {
             return DocumentFile.fromSingleUri(context, uri).delete();
         } catch (NullPointerException e) {
@@ -149,7 +176,7 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public boolean restoreImage(Uri uri) {
+    public boolean restoreImageToPublicStorage(Uri uri) {
         try {
             File file = new File(uri.getPath());
             File fileEncrypted = new File(getInternalImageDirectory()
@@ -174,11 +201,11 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public boolean storeImage(ArrayList<FileModel> fileModels, SecretKey secretKey) throws NoSuchAlgorithmException,
+    public boolean storeEncryptedImage(ArrayList<FileModel> fileModels, SecretKey secretKey) throws NoSuchAlgorithmException,
             NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
         for (FileModel image :
                 fileModels) {
-            storeImage(image, secretKey);
+            storeEncryptedImage(image, secretKey);
         }
         return true;
     }
@@ -201,7 +228,7 @@ public class AppFileHelper implements FileHelper {
     }
 
     @Override
-    public void removeTempImages() {
+    public void removeTemporaryImages() {
         try {
             FileUtils.deleteDirectory(getInternalTempDirectory());
         } catch (IOException | NoSuchMethodError e) {

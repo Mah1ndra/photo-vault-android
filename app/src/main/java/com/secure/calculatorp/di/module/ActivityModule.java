@@ -92,7 +92,7 @@ public class ActivityModule {
     }
 
     @Provides
-    PhotoAdapter provideBlogAdapter() {
+    PhotoAdapter providePhotoAdapter() {
         return new PhotoAdapter(new ArrayList<>());
     }
 

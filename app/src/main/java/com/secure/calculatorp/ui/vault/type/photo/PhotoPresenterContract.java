@@ -43,7 +43,7 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
 
     @Override
     public void onRestoreClicked(Uri uri) {
-        dataManager.restoreImage(uri);
+        dataManager.restoreImageToPublicStorage(uri);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresent
         try {
             SecretKey secretKey = (SecretKey) cryptoKeyManager.retrieveKey(dataManager.getTempPin().toCharArray());
             if (secretKey != null) {
-                mvpView.updateList(dataManager.getTempImages());
+                mvpView.updateList(dataManager.getTemporaryImages());
             }
         } catch (KeyStoreException | UnrecoverableEntryException | NoSuchAlgorithmException e) {
             e.printStackTrace();

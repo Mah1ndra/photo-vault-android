@@ -26,9 +26,6 @@ import com.secure.calculatorp.util.StringUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by janisharali on 27/01/17.
- */
 
 @Singleton
 public class AppPreferencesHelper implements PreferencesHelper {

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.secure.calculatorp.R;
 import com.secure.calculatorp.crypto.CryptoManager;
@@ -16,7 +15,6 @@ import com.secure.calculatorp.util.CommonUtils;
 import com.secure.calculatorp.util.StringUtil;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -92,7 +90,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
     @Override
     public void onScreenHidden() {
         if (!isPausedForSelection) {
-            dataManager.removeTempImages();
+            dataManager.removeTemporaryImages();
             vaultView.destroyActivity();
         }
     }
@@ -113,7 +111,7 @@ public class VaultPresenterContract<V extends VaultView> implements VaultPresent
                 @Override
                 public void onEncrypted() {
                     try {
-                        dataManager.createTempImages(secretKey);
+                        dataManager.createTemporaryImages(secretKey);
                     } catch (IOException | NoSuchAlgorithmException
                             | NoSuchPaddingException
                             | InvalidAlgorithmParameterException | InvalidKeyException e) {

@@ -24,6 +24,7 @@ import com.secure.calculatorp.crypto.key.KeyGen;
 import com.secure.calculatorp.data.DataManager;
 import com.secure.calculatorp.di.ApplicationContext;
 import com.secure.calculatorp.di.module.ApplicationModule;
+import com.secure.calculatorp.threading.ThreadExecutor;
 
 import javax.inject.Singleton;
 
@@ -46,4 +47,6 @@ public interface ApplicationComponent {
     CryptoManager getCryptoManager();
 
     KeyGen getKengen();
+
+    ThreadExecutor getThreadExecutor();
 }
