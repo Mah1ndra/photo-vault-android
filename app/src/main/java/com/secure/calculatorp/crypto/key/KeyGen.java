@@ -4,9 +4,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-/**
- * Created by zakir on 10/01/2019.
- */
+
 
 public interface KeyGen {
 

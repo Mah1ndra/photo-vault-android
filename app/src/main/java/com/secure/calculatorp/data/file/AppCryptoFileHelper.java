@@ -38,9 +38,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 06/01/2019.
- */
 
 public class AppCryptoFileHelper implements FileHelper {
 

@@ -14,9 +14,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 10/01/2019.
- */
 
 public class AESGCMCipherAlgorithm implements CipherAlgorithm {
 

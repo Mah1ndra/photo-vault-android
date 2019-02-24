@@ -1,8 +1,5 @@
 package com.secure.calculatorp.util;
 
-/**
- * Created by zakir on 05/01/2019.
- */
 
 public class AppConstants {
     public static final String PREF_NAME = "calculator_pref";

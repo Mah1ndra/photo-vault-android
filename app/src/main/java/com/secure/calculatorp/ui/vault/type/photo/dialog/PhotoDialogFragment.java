@@ -34,9 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 
-/**
- * Created by zakir on 08/01/2019.
- */
+
 
 public class PhotoDialogFragment extends BaseDialogFragment implements PhotoDialogView {
 

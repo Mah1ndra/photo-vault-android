@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calculator P</string>
+    <string name="app_name">Hide It</string>
     <string name="str_backspace"><![CDATA[<=]]></string>
     <string name="str_division">/</string>
     <string name="str_clear">C</string>

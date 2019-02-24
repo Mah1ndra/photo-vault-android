@@ -2,10 +2,6 @@ package com.secure.calculatorp.data.model;
 
 import android.net.Uri;
 
-/**
- * Created by zakir on 06/01/2019.
- */
-
 public class FileModel {
 
     private Uri uri;

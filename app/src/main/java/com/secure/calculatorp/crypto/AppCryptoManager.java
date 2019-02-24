@@ -22,9 +22,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 10/01/2019.
- */
+
 
 public class AppCryptoManager implements CryptoManager {
 

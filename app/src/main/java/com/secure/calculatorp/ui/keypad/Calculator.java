@@ -11,9 +11,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 03/01/2019.
- */
 
 public class Calculator {
 

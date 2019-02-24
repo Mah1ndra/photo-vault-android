@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 02/01/2019.
- */
+
 
 public class PinValidator {
 

@@ -9,9 +9,6 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 10/01/2019.
- */
 
 public interface CipherAlgorithm {
 

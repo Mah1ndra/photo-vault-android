@@ -9,9 +9,6 @@ import java.util.HashSet;
 
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 08/01/2019.
- */
 
 public interface PhotoView extends BaseMvpView {
 

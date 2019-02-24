@@ -4,9 +4,7 @@ import com.secure.calculatorp.ui.base.BaseMvpView;
 
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 30/12/2018.
- */
+
 
 public interface KeyPadView extends BaseMvpView{
 

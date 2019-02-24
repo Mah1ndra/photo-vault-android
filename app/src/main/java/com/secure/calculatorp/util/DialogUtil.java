@@ -9,9 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.secure.calculatorp.R;
 
-/**
- * Created by zakir on 31/12/2018.
- */
 
 public class DialogUtil {
 

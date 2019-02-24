@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 11/01/2019.
- */
+
 
 public class EncryptionTask extends BaseAsyncTask<SecretKey, String, Boolean> {
 

@@ -12,9 +12,7 @@ import java.security.UnrecoverableEntryException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 08/01/2019.
- */
+
 
 public class PhotoPresenterContract<V extends PhotoView> implements PhotoPresenter<V> {
 

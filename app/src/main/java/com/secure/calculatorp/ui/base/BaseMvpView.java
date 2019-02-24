@@ -2,9 +2,6 @@ package com.secure.calculatorp.ui.base;
 
 import android.support.annotation.StringRes;
 
-/**
- * Created by zakir on 06/01/2019.
- */
 
 public interface BaseMvpView {
     void showLoading();

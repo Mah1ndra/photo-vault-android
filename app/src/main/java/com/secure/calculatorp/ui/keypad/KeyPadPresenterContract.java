@@ -20,9 +20,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 30/12/2018.
- */
 
 public class KeyPadPresenterContract<V extends KeyPadView> implements KeyPadPresenter<V> {
 

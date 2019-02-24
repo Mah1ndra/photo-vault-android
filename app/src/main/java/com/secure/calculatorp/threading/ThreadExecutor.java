@@ -11,9 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 16/01/2019.
- */
+
 
 public class ThreadExecutor {
 

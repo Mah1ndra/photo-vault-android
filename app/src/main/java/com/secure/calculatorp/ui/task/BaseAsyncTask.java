@@ -9,9 +9,6 @@ import com.secure.calculatorp.di.ActivityContext;
 
 import javax.xml.transform.Result;
 
-/**
- * Created by zakir on 11/01/2019.
- */
 
 public abstract class BaseAsyncTask<Params, Progress, Result>
         extends AsyncTask<Params, Progress, Result> {

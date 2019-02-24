@@ -6,9 +6,6 @@ import com.secure.calculatorp.data.DataManager;
 
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 08/01/2019.
- */
 
 public class PhotoDialogPresenterContract<V extends PhotoDialogView> implements PhotoDialogPresenter<V> {
 

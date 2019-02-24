@@ -9,9 +9,6 @@ import com.secure.calculatorp.di.module.ApplicationModule;
 
 import javax.inject.Inject;
 
-/**
- * Created by zakir on 05/01/2019.
- */
 
 public class VaultApp extends Application {
 

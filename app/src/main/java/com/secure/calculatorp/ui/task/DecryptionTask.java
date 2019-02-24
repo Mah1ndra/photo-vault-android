@@ -10,9 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 11/01/2019.
- */
 
 public class DecryptionTask extends BaseAsyncTask<SecretKey, String, Boolean> {
 

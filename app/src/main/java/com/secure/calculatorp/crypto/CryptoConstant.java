@@ -1,8 +1,6 @@
 package com.secure.calculatorp.crypto;
 
-/**
- * Created by zakir on 29/12/2018.
- */
+
 
 public class CryptoConstant {
     public static final String KEY_STORE = "/vaultKeyStore.keystore";

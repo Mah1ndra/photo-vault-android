@@ -14,9 +14,6 @@ import java.util.HashSet;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
-/**
- * Created by zakir on 06/01/2019.
- */
 
 public interface FileHelper {
 

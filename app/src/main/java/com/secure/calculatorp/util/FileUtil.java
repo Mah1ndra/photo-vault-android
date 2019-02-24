@@ -12,9 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
 
-/**
- * Created by zakir on 30/12/2018.
- */
 
 public class FileUtil {
 

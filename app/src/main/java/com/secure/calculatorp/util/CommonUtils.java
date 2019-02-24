@@ -6,9 +6,6 @@ import android.util.DisplayMetrics;
 
 import java.security.SecureRandom;
 
-/**
- * Created by zakir on 02/01/2019.
- */
 
 public class CommonUtils {
 
